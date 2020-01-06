@@ -1,36 +1,43 @@
-var routes = require('express').Router();
-var db = require('../dao/db');
-var bookDao = require('../dao/bookDao');
+var routes = require("express").Router();
+var db = require("../dao/db");
+var bookDao = require("../dao/bookDao");
 
-routes.get('/book',function(req,res){
-    bookDao.getAllBooks(function(error, result){
-      if(error) throw error;
-      res.setHeader('Content-Type', 'application/json');
+routes.get("/book", function(req, res) {
+  bookDao
+    .getAllBooks()
+    .then(function(result) {
+      res.setHeader("Content-Type", "application/json");
       res.send(result);
+    })
+    .catch(function(err) {
+      throw err;
     });
 });
 
-routes.post('/book', function(req, res){
+routes.post("/book", function(req, res) {
   var book = req.body;
-  bookDao.addBook(book, function(err, result){
-    if(err){
+  bookDao
+    .addBook(book)
+    .then(function(result) {
+      res.status(201);
+      res.send("Add Book Successful!");
+    })
+    .catch(function(err) {
       res.status(400);
-      res.send('Add Book Failed!');
-    }
-    res.status(201);
-    res.send('Add Book Successful!');
-  });
-
+      res.send("Add Book Failed!");
+    });
 });
 
-routes.delete('/book/:id', function(req, res){
-  bookDao.removeBook(req.params.id, function(err, result){
-    if(err){
+routes.delete("/book/:id", function(req, res) {
+  bookDao
+    .removeBook(req.params.id)
+    .then(function(result) {
+      res.send("Delete Book Successful!");
+    })
+    .catch(function(err) {
       res.status(400);
-      res.send('Delete Book Failed!');
-    }
-    res.send('Delete Book Successful!');
-  });
+      res.send("Delete Book Failed!");
+    });
 });
 
 module.exports = routes;

@@ -1,7 +1,10 @@
-var db = require('./db');
+var db = require("./db");
+//var Promises = require("es6-promises");
 
-exports.getAllAuthors = function(cb){
-    db.query('select * from lms.author', function(err, result) {
-        cb(err, result);
-      });
+exports.getAllAuthors = function() {
+  return new Promises(function(resolve, reject) {
+    db.query("select * from author", function(err, result) {
+      return err ? reject(err) : resolve(result);
+    });
+  });
 };
